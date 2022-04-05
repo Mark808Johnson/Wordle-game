@@ -13,18 +13,20 @@ class color:
    END = '\033[0m'
 
 def open_word_list():
-    """
-    Returns list of strings (valid words)
-    """
     with open("word_list.txt") as f:
         words = f.read().split()
     return words
 
-def valid_guess(word, word_list):
-    """
-    Initialized by
-    """
-    user_attempt = str(input("Your guess: ")).lower()
+def valid_guess(word, word_list, attempt):
+    if attempt == 1:
+        ending = "st"
+    elif attempt == 2:
+        ending = "nd"
+    elif attempt == 3:
+        ending = "rd"
+    else:
+        ending = "th"
+    user_attempt = str(input("Your {}{} guess: ".format(attempt, ending))).lower()
     while len(user_attempt) != 5 or user_attempt not in word_list:
         if len(user_attempt) != 5:
             user_attempt = str(input("Guess not 5 letters long, please try again: ")).lower()
@@ -49,10 +51,10 @@ def update_alphabet(alphabet, letter, colour):
         alphabet[1] += letter
     return alphabet
 
-def one_guess(word, word_list, alphabet):
+def one_guess(word, word_list, alphabet, attempt):
     guess = "" # provides simple string
     result = "" # provides colour-coded result to be printed in terminal
-    user_attempt = valid_guess(word, word_list)
+    user_attempt = valid_guess(word, word_list, attempt)
     if user_attempt == word:
         result = f"\033[0;92m{user_attempt}\33[0m"
         guess = user_attempt
@@ -79,13 +81,15 @@ def correct_guess(secret_word, guess):
     return True if guess.lower() == secret_word.lower() else False
 
 def play_game(attempts):
+    print("\033[4mWelcome to Mark's Wordle game! You have {} attempts to guess "
+          "the secret five-letter word\33[0m".format(attempts))
     alphabet = ["abcdefghijklmnopqrstuvwxyz", "", "", ""]
     word_list = open_word_list()
     word = random.choice(word_list)
     #print(f"Secret word is: {word} ")
     guesses_made = []
     for attempt in range(attempts):
-        guess, fresh_alphabet = one_guess(word, word_list, alphabet)
+        guess, fresh_alphabet = one_guess(word, word_list, alphabet, (attempt+1))
         guesses_made.append(str(guess))
         remaining_letters = f"\033[0;97m{fresh_alphabet[0]}\33[0m"
         greens = f"\033[0;92m{fresh_alphabet[1]}\33[0m"
@@ -97,7 +101,7 @@ def play_game(attempts):
             break
         else:
             if (attempt+1) == attempts:
-                print("Incorrect, and you're out of goes. You lose!")
+                print("Incorrect. Sorry, you're out of goes")
                 print(f"Secret word was \033[0;97m{word}\33[0m")
 
-play_game(5)
+play_game(6)
