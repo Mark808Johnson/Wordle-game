@@ -10,7 +10,7 @@ Based on popular internet word game https://en.wikipedia.org/wiki/Wordle
 
 Created using Python 3.8.2
 
-Application runs in the console of your IDE (ie. PyCharm, VSC, etc).
+Application runs in the console of PyCharm.
 
 
 
